@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 115%; background: transparent }
+		pre { font-size: 10pt; font-family: "Liberation Mono", monospace; background: transparent }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;IP Address Checker&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ip-address {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            word-break: break-all;
+        }
+
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+
+        .label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .copy-btn {
+            margin-top: 15px;
+            padding: 8px 20px;
+            font-size: 14px;
+            background: #28a745;
+            display: none;
+        }
+
+        .copy-btn:hover {
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .copied {
+            background: #20c997 !important;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;h1&gt;🌐 IP Address Checker&lt;/h1&gt;
+        &lt;button id=&quot;getIpBtn&quot; onclick=&quot;getIP()&quot;&gt;Get My IP Address&lt;/button&gt;
+        &lt;div class=&quot;result&quot; id=&quot;result&quot;&gt;
+            &lt;span class=&quot;loading&quot;&gt;Click the button to fetch your IP&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button id=&quot;copyBtn&quot; class=&quot;copy-btn&quot; onclick=&quot;copyIP()&quot;&gt;Copy IP&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        let currentIP = '';
+
+        async function getIP() {
+            const btn = document.getElementById('getIpBtn');
+            const result = document.getElementById('result');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            btn.disabled = true;
+            result.innerHTML = '&lt;span class=&quot;loading&quot;&gt;Fetching your IP...&lt;/span&gt;';
+            copyBtn.style.display = 'none';
+            
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                currentIP = data.ip;
+                
+                result.innerHTML = `
+                    &lt;div class=&quot;label&quot;&gt;Your IP Address:&lt;/div&gt;
+                    &lt;div class=&quot;ip-address&quot;&gt;${currentIP}&lt;/div&gt;
+                `;
+                copyBtn.style.display = 'inline-block';
+            } catch (error) {
+                result.innerHTML = '&lt;span class=&quot;error&quot;&gt;Failed to fetch IP. Please try again.&lt;/span&gt;';
+                console.error('Error:', error);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function copyIP() {
+            const copyBtn = document.getElementById('copyBtn');
+            
+            navigator.clipboard.writeText(currentIP).then(() =&gt; {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✓ Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() =&gt; {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err =&gt; {
+                console.error('Failed to copy:', err);
+            });
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</body>
+</html>
